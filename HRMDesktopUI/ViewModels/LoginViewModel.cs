@@ -1,5 +1,7 @@
 ﻿using Caliburn.Micro;
+using HRMDesktopUI.Helpers;
 using System;
+using System.Threading.Tasks;
 
 namespace HRMDesktopUI.ViewModels
 {
@@ -7,6 +9,12 @@ namespace HRMDesktopUI.ViewModels
     {
         private string _UserName;
         private string _Password;
+        private IAPIHelper _apiHelper;
+
+        public LoginViewModel(IAPIHelper apiHelper)
+        {
+            _apiHelper = apiHelper;
+        }
 
         public string UserName
         {
@@ -15,7 +23,7 @@ namespace HRMDesktopUI.ViewModels
             { 
                 _UserName = value;
                 NotifyOfPropertyChange(() => UserName);
-                NotifyOfPropertyChange(() => CanLogIn);
+               // NotifyOfPropertyChange(() => CanLogIn);
             }
         }
 
@@ -44,9 +52,18 @@ namespace HRMDesktopUI.ViewModels
             }
         }
 
-        public void LogIn()
+        public async Task LogIn()
         {
-            Console.WriteLine(UserName, Password);   
+            try
+            {
+                var result = await _apiHelper.Authenticate(UserName, Password);
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine(ex.Message);
+            }
+            
         }
         
     }
